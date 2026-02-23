@@ -16,5 +16,7 @@ RUN npm ci --only=production --legacy-peer-deps
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY prisma ./prisma
+COPY start.sh ./start.sh
+RUN chmod +x ./start.sh
 EXPOSE 5001
-CMD ["node", "dist/index.js"]
+CMD ["sh", "start.sh"]
