@@ -1,17 +1,14 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import crypto from 'crypto';
 import { prisma } from '../utils/prisma';
 import { sendPasswordReset } from '../utils/email';
 import { AuthRequest } from '../types';
 
 function signToken(userId: string, email: string, role: string): string {
-  return jwt.sign(
-    { userId, email, role },
-    process.env.JWT_SECRET!,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-  );
+  const opts: SignOptions = { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as SignOptions['expiresIn'] };
+  return jwt.sign({ userId, email, role }, process.env.JWT_SECRET!, opts);
 }
 
 export async function register(req: Request, res: Response): Promise<void> {
