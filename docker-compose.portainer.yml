@@ -21,9 +21,6 @@ services:
 
   knovo-backend:
     image: ghcr.io/atifalin/knovo-backend:latest
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
     container_name: knovo-backend
     restart: unless-stopped
     depends_on:
@@ -31,7 +28,7 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      PORT: 5001
+      PORT: "5001"
       DATABASE_URL: postgresql://knovo:KnovoDb@2025!@knovo-db:5432/knovo_db
       JWT_SECRET: KnovoJwt@SuperSecret2025!ChangeMe
       JWT_EXPIRES_IN: 7d
@@ -55,9 +52,6 @@ services:
 
   knovo-frontend:
     image: ghcr.io/atifalin/knovo-frontend:latest
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
     container_name: knovo-frontend
     restart: unless-stopped
     depends_on:

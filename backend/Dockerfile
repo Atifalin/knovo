@@ -1,4 +1,5 @@
 FROM node:20-alpine AS builder
+RUN apk add --no-cache openssl openssl-dev
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
@@ -7,6 +8,8 @@ RUN npx prisma generate
 RUN npm run build
 
 FROM node:20-alpine AS production
+LABEL org.opencontainers.image.source=https://github.com/Atifalin/knovo
+RUN apk add --no-cache openssl openssl-dev
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production --legacy-peer-deps

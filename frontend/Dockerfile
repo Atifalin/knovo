@@ -6,6 +6,7 @@ COPY . .
 RUN npm run build
 
 FROM nginx:alpine AS production
+LABEL org.opencontainers.image.source=https://github.com/Atifalin/knovo
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
