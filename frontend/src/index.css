@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0B1F3B;
+  --color-navy-light: #162d52;
+  --color-navy-dark: #071428;
+  --color-gold: #C6A75E;
+  --color-gold-light: #d4bc80;
+  --color-gold-dark: #a8893e;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #ffffff;
+  color: #0B1F3B;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-serif);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #C6A75E; border-radius: 3px; }
+
+/* Cart drawer overlay */
+.cart-overlay {
+  backdrop-filter: blur(2px);
+}
+
+/* Product image zoom */
+.product-img-zoom {
+  overflow: hidden;
+}
+.product-img-zoom img {
+  transition: transform 0.5s ease;
+}
+.product-img-zoom:hover img {
+  transform: scale(1.06);
+}
