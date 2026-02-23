@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY . .
-RUN npx prisma generate
+RUN node_modules/.bin/prisma generate
 RUN npm run build
 
 FROM node:20-alpine AS production
