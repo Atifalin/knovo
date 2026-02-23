@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  knovo-db:
+    image: postgres:16-alpine
+    container_name: knovo-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: knovo_db
+      POSTGRES_USER: knovo
+      POSTGRES_PASSWORD: KnovoDb@2025!
+    volumes:
+      - knovo_pgdata:/var/lib/postgresql/data
+    networks:
+      - knovo-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U knovo -d knovo_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  knovo-backend:
+    image: ghcr.io/atifalin/knovo-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: knovo-backend
+    restart: unless-stopped
+    depends_on:
+      knovo-db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5001
+      DATABASE_URL: postgresql://knovo:KnovoDb@2025!@knovo-db:5432/knovo_db
+      JWT_SECRET: KnovoJwt@SuperSecret2025!ChangeMe
+      JWT_EXPIRES_IN: 7d
+      JWT_REFRESH_SECRET: KnovoRefresh@SuperSecret2025!ChangeMe
+      STRIPE_SECRET_KEY: sk_test_placeholder
+      STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
+      STRIPE_WEBHOOK_SECRET: whsec_placeholder
+      FRONTEND_URL: https://knovo.ezypath.in
+      FLAT_RATE_SHIPPING_CAD: "12.99"
+      FREE_SHIPPING_THRESHOLD_CAD: "150"
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: "587"
+      SMTP_USER: ""
+      SMTP_PASS: ""
+      ADMIN_EMAIL: admin@knovo.ca
+    expose:
+      - "5001"
+    networks:
+      - knovo-internal
+      - proxy-network
+
+  knovo-frontend:
+    image: ghcr.io/atifalin/knovo-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: knovo-frontend
+    restart: unless-stopped
+    depends_on:
+      - knovo-backend
+    expose:
+      - "80"
+    networks:
+      - proxy-network
+
+volumes:
+  knovo_pgdata:
+    name: knovo_pgdata
+
+networks:
+  knovo-internal:
+    name: knovo-internal
+    driver: bridge
+  proxy-network:
+    external: true
+    name: proxy-network
